@@ -3,6 +3,10 @@
 ![mach-o.jpg](https://github.com/NSSONGMENG/wiki/blob/master/images/_objc_init.png)
 [思维导图文件](https://github.com/NSSONGMENG/wiki/blob/master/mindmaster/_objc_init.emmx)
 
+`main`函数执行之前，系统会加载mach-o文件，这个过程以`_objc_init()`函数开始，载入类、分类、协议等，为程序的运行做准备。
+
+下面简要分析`_objc_init()`都干了哪些事
+
 ```Objective-C
 _objc_init() {
     // 注册处理函数
@@ -65,12 +69,15 @@ _read_images() {
 ```
 
 ## load_images操作
+这一步操作的目的是调用类和分类的+load方法
+
 - 准备+load方法列表
-    - 处理类的+load，递归调用，从父类开始添加，放入loadable_classes数组
+    - 处理类的+load，递归处理从父类开始添加，放入loadable_classes数组
     - 处理分类的+load，放入loadable_categories数组
 - 调用+load方法
     - 调用类的+load
     - 调用分类的+load
+
 ```C
 
 // 处理+load方法使用，保存类和其+load
