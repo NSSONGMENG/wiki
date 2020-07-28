@@ -11,8 +11,8 @@ void map_images(unsigned count, const char * const paths[],
 }
 ```
 
-`map_images`函数中有两个操作，加锁，调用`map_images_nolock()`函数
-`map_images_nolock()`函数中经过一些列操作后，调用了`read_images()`函数
+`map_images`函数中有两个操作，加锁，调用`map_images_nolock()`函数。
+`map_images_nolock()`函数中经过一些列操作后，调用了`read_images()`函数。
 
 > 注：为方便查看加载过程，以下代码对源码各主要抽象方法进行了合并，并忽略了源码的诸多细节
 
