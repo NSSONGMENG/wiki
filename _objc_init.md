@@ -65,6 +65,12 @@ _read_images() {
 ```
 
 ## load_images操作
+- 准备+load方法列表
+    - 处理类的+load，递归调用，从父类开始添加，放入loadable_classes数组
+    - 处理分类的+load，放入loadable_categories数组
+- 调用+load方法
+    - 调用类的+load
+    - 调用分类的+load
 ```C
 
 // 处理+load方法使用，保存类和其+load
@@ -81,7 +87,7 @@ struct loadable_category {
 
 // 为方便查看处理过程，以下代码对源码各抽象方法进行了合并，并忽略了源码的诸多细节
 load_images(){
-    // 1. 准备+load方法，将+load方法放入loadable_categories数组
+    // 1. 准备+load方法，将+load方法放入loadable_classes数组
     prepare_load_methods(){
         // 1.1. 处理类的+load
         classref_t const * classlist = _getObjc2NonlazyClassList(mhdr, &count);
@@ -101,7 +107,7 @@ load_images(){
             }
         }
 
-        // 1.2. 处理分类的+load
+        // 1.2. 处理分类的+load，分类的+load方法放入loadable_categories数组
         category_t * const * categorylist = _getObjc2NonlazyCategoryList(mhdr, &count);
         for (i = 0; i < count; i++) {
             category_t * cat = categorylist[i];
