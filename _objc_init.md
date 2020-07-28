@@ -1,29 +1,36 @@
-## 依据objc4-779.1
+依据objc4-779.1
 
-![mach-o.jpg](https://github.com/NSSONGMENG/wiki/blob/master/images/_objc_init.png)
+## _objc_init加载过程粗解
+
+![mach-o.jpg](https://github.com/NSSONGMENG/wiki/blob/master/images/_objc_init.jpg)
+
 [思维导图文件](https://github.com/NSSONGMENG/wiki/blob/master/mindmaster/_objc_init.emmx)
 
-`main`函数执行之前，系统会加载mach-o文件，这个过程以`_objc_init()`函数开始，载入类、分类、协议等，为程序的运行做准备。
+`main`函数执行之前，系统会加载mach-o文件，这个过程以`_objc_init()`函数开始，解析类、分类、协议等，并调用+load方法，为程序的运行做必要准备。
 
 下面简要分析`_objc_init()`都干了哪些事
+> 注：为方便查看加载过程，以下代码对源码各主要抽象方法进行了合并，并忽略了源码的诸多细节
 
 ```Objective-C
 _objc_init() {
-    // 注册处理函数
+    // 1. 初始计划runtime
+    runtime_init();
+
+    // 2. 注册处理函数
     _dyld_objc_notify_register() {
-        // 1. 处理镜像映射
+        // 2.1. 处理镜像映射
         map_images(){
             map_images_nolock(){
-                // 1.1. 找出所有OC元数据镜像
-                // 1.2. 读取镜像，下方给出过程
+                // 2.1.1. 找出所有OC元数据镜像
+                // 2.1.2. 读取镜像，下方给出过程
                 _read_images() {}
-                // 1.3. 调用加载器加载镜像 ？
+                // 2.1.3. 调用加载器加载镜像 ？
            }
 
         },
-        // 2. 加载镜像
+        // 2.2 处理镜像加载
         load_images(){}
-        // 卸载镜像
+        // 2.3 处理镜像卸载
         unload_images(){}
     }
 }
@@ -92,7 +99,6 @@ struct loadable_category {
     IMP method;
 };
 
-// 为方便查看处理过程，以下代码对源码各抽象方法进行了合并，并忽略了源码的诸多细节
 load_images(){
     // 1. 准备+load方法，将+load方法放入loadable_classes数组
     prepare_load_methods(){
